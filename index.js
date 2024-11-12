@@ -5,24 +5,27 @@ async function atualizarTabela() {
         const resposta = await fetch(url)
         const registros = await resposta.json()
 
-        let tabelaHTML = ''
+        var tabelaHTML = ''
         registros.forEach(function(registro) {
+           var alturaFormatada = parseFloat((registro.altura || '').toString().replace(',', '.')).toFixed(2)
             tabelaHTML += `
                 <tr>
                     <td>${registro.nome}</td>
                     <td>${registro.idade}</td>
-                    <td>${registro.altura}</td>
+                    <td>${alturaFormatada}</td>
                     <td>${registro.peso}</td>
+                    <td>${registro.cpf}</td>
+                    <td>${registro.dataRegistro}</td>
                 </tr>
             `
         })
 
-        document.getElementById('tabelaRegistros').innerHTML = tabelaHTML
+        $('#tabelaRegistros').html(tabelaHTML)
+
     } catch (error) {
         console.error('Erro ao atualizar a tabela:', error)
     }
 }
-
 
 async function enviarDados(dados) {
     const url = 'http://localhost:3000/rick/add'
@@ -44,14 +47,21 @@ async function enviarDados(dados) {
     }
 }
 
-function toJson(teste) {
-    console.log(teste)
-    let dota = JSON.stringify(teste)
-    console.log(dota)
-    enviarDados(dota)
+function converterParaJson(dadosFormulario) {
+
+    if (dadosFormulario.alturaInput) {
+        dadosFormulario.alturaInput = dadosFormulario.alturaInput.replace(',', '.')
+    }
+    
+    console.log(dadosFormulario)
+    let dadosJson = JSON.stringify(dadosFormulario)
+    console.log(dadosJson)
+    enviarDados(dadosJson)
 }
 
 $(document).ready(function() {
+    $('#alturaInput').mask('000,00', {reverse: true})
+
     $('#saveButton').on('click', function() {
         var obj = {}
         $('input').each(function(index, element) {
@@ -60,13 +70,14 @@ $(document).ready(function() {
             obj[id] = val
         })
 
-        toJson(obj)
-
+        converterParaJson(obj)
 
         $('#nomeInput').val('')
         $('#idadeInput').val('')
         $('#alturaInput').val('')
         $('#pesoInput').val('')
+        $('#cpfInput').val('')
+        $('#dataRegistroInput').val('')
     })
 
     atualizarTabela()
