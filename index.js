@@ -28,6 +28,31 @@ async function atualizarTabela() {
         console.error('Erro ao atualizar a tabela:', error);
     }
 }
+
+function validarCpf(res) {
+    if (res === true) {
+        alert('CPF REPETIDO')
+    } else if (res === false) {
+        console.log('CPF APROVADO')
+        coletarDados()
+    }
+
+}
+
+async function verificarCpf(cpf) {
+    const url = `http://localhost:3000/rick/check-cpf/${cpf}`
+    try {
+        const resposta = await fetch(url)
+        const resultado = await resposta.json()
+        validarCpf(resultado.exists)
+        return resultado.exists
+
+    } catch (error) {
+        // console.error('CPF repetido:', error)
+        return false
+    }
+}
+
 async function enviarDados(dados) {
     const url = 'http://localhost:3000/rick/add'
     console.log("Enviando dados para:", url)
@@ -60,25 +85,37 @@ function converterParaJson(dadosFormulario) {
     enviarDados(dadosJson)
 }
 
+function verificarCPF(cpf) {
+    console.log('cpfVerificado:', cpf)
+
+}
+
+function coletarDados() {
+    var obj = {};
+    $('input').each(function (index, element) {
+        var val = $(this).val()
+        var id = $(this).attr('id')
+        obj[id] = val
+    })
+
+    converterParaJson(obj)
+
+    $('#nomeInput').val('')
+    $('#idadeInput').val('')
+    $('#alturaInput').val('')
+    $('#pesoInput').val('')
+    $('#cpfInput').val('')
+}
+
 $(document).ready(function () {
     $('#alturaInput').mask('000,00', { reverse: true })
 
-    $('#saveButton').on('click', function () {
-        var obj = {};
-        $('input').each(function (index, element) {
-            var val = $(this).val();
-            var id = $(this).attr('id');
-            obj[id] = val;
-        })
+    $('#saveButton').on('click', async function () {
+        var cpf = $('#cpfInput').val()
+        verificarCpf(cpf)
 
-        converterParaJson(obj);
 
-        $('#nomeInput').val('');
-        $('#idadeInput').val('');
-        $('#alturaInput').val('');
-        $('#pesoInput').val('');
-        $('#cpfInput').val('');
     });
-
     atualizarTabela()
+
 })
