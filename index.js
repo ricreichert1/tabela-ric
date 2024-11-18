@@ -53,6 +53,35 @@ async function verificarCpf(cpf) {
     }
 }
 
+async function buscarMocorongo(teclasApertadas) {
+    const url = `http://localhost:3000/rick/search/${teclasApertadas}`
+
+    try {
+        const resposta = await fetch(url)
+        const registros = await resposta.json()
+        var tabelaHTML = ''
+        registros.forEach(function (registro) {
+            var alturaFormatada = parseFloat((registro.altura || '').toString().replace(',', '.')).toFixed(2)
+            var dataRegistroFormatada = new Date(registro.dataregistro).toLocaleString()
+
+            tabelaHTML += `
+                <tr>
+                    <td>${registro.nome}</td>
+                    <td>${registro.idade}</td>
+                    <td>${alturaFormatada}</td>
+                    <td>${registro.peso}</td>
+                    <td>${registro.cpf}</td>
+                    <td>${dataRegistroFormatada}</td>
+                </tr>
+            `
+        })
+
+        $('#tabelaRegistros').html(tabelaHTML)
+    } catch (error) {
+        console.error('Erro ao buscar registros:', error)
+    }
+}
+
 async function enviarDados(dados) {
     const url = 'http://localhost:3000/rick/add'
     console.log("Enviando dados para:", url)
@@ -113,9 +142,18 @@ $(document).ready(function () {
     $('#saveButton').on('click', async function () {
         var cpf = $('#cpfInput').val()
         verificarCpf(cpf)
+    })
 
-
-    });
+    $('#buscaInput').on('input', function () {
+        var teclasApertadas = $(this).val()
+        console.log("teste")
+        if (teclasApertadas.length >= 2) {
+            buscarMocorongo(teclasApertadas)
+        } else if (teclasApertadas.length === 0) {
+            atualizarTabela()
+            console.log('zeroclicks')
+        }
+    })
     atualizarTabela()
-
+    console.log('teste')
 })
