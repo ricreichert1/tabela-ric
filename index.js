@@ -52,7 +52,7 @@ async function verificarCpf(cpf) {
         return false
     }
 }
-
+//teste
 async function buscarMocorongo(teclasApertadas) {
     const url = `http://localhost:3000/rick/search/${teclasApertadas}`
 
