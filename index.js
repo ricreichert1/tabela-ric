@@ -1,3 +1,48 @@
+function mostrarRegistros(registros) {
+    console.log(registros)
+    var tabelaHTML = ''
+    registros.forEach(function (registro) {
+        var alturaFormatada = parseFloat((registro.altura || '').toString().replace(',', '.')).toFixed(2)
+        var dataRegistroFormatada = new Date(registro.dataregistro).toLocaleString()
+
+        tabelaHTML += `
+            <tr id="registro-${registro.cpf}">
+                <td>${registro.nome}</td>
+                <td>${registro.idade}</td>
+                <td>${alturaFormatada}</td>
+                <td>${registro.peso}</td>
+                <td>${registro.cpf}</td>
+                <td>${dataRegistroFormatada}</td>
+                <td><button onclick="editarRegistro('${registro.cpf}')">Editar</button></td>
+                <td><button onclick="deletarRegistro('${registro.cpf}')">Deletar</button></td>
+            </tr>
+        `
+    })
+    $('#tabelaRegistros').html(tabelaHTML)
+}
+
+async function deletarRegistro(cpf) {
+    var url = `http://localhost:3000/rick/delete/${cpf}`
+
+    try {
+        var resposta = await fetch(url, {
+            method: 'DELETE',
+        });
+        var resultado = await resposta.json()
+        if (resposta.ok) {
+            alert(resultado.message)
+            $(`#registro-${cpf}`).remove()
+        } else {
+            alert(resultado.message || 'Erro ao deletar registro.')
+        }
+    } catch (error) {
+        console.error('Erro ao tentar deletar o registro:', error)
+        alert('Erro ao tentar deletar o registro.')
+    }
+}
+
+
+
 async function atualizarTabela() {
     const url = 'http://localhost:3000/rick/list'
 
@@ -5,24 +50,7 @@ async function atualizarTabela() {
         const resposta = await fetch(url)
         const registros = await resposta.json()
 
-        var tabelaHTML = ''
-        registros.forEach(function (registro) {
-            var alturaFormatada = parseFloat((registro.altura || '').toString().replace(',', '.')).toFixed(2)
-            var dataRegistroFormatada = new Date(registro.dataregistro).toLocaleString()
-
-            tabelaHTML += `
-        <tr>
-            <td>${registro.nome}</td>
-            <td>${registro.idade}</td>
-            <td>${alturaFormatada}</td>
-            <td>${registro.peso}</td>
-            <td>${registro.cpf}</td>
-            <td>${dataRegistroFormatada}</td>
-        </tr>
-    `;
-        });
-
-        $('#tabelaRegistros').html(tabelaHTML);
+        mostrarRegistros(registros)
 
     } catch (error) {
         console.error('Erro ao atualizar a tabela:', error);
@@ -57,26 +85,11 @@ async function buscarMocorongo(teclasApertadas) {
     const url = `http://localhost:3000/rick/search/${teclasApertadas}`
 
     try {
+        
         const resposta = await fetch(url)
         const registros = await resposta.json()
-        var tabelaHTML = ''
-        registros.forEach(function (registro) {
-            var alturaFormatada = parseFloat((registro.altura || '').toString().replace(',', '.')).toFixed(2)
-            var dataRegistroFormatada = new Date(registro.dataregistro).toLocaleString()
-
-            tabelaHTML += `
-                <tr>
-                    <td>${registro.nome}</td>
-                    <td>${registro.idade}</td>
-                    <td>${alturaFormatada}</td>
-                    <td>${registro.peso}</td>
-                    <td>${registro.cpf}</td>
-                    <td>${dataRegistroFormatada}</td>
-                </tr>
-            `
-        })
-
-        $('#tabelaRegistros').html(tabelaHTML)
+        mostrarRegistros(registros)
+       
     } catch (error) {
         console.error('Erro ao buscar registros:', error)
     }
