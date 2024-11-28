@@ -1,11 +1,11 @@
 function mostrarRegistros(registros) {
     console.log(registros)
-    var tabelaHTML = ''
+    var tabela = ''
     registros.forEach(function (registro) {
         var alturaFormatada = parseFloat((registro.altura || '').toString().replace(',', '.')).toFixed(2)
         var dataRegistroFormatada = new Date(registro.dataregistro).toLocaleString()
 
-        tabelaHTML += `
+        tabela += `
             <tr id="registro-${registro.cpf}">
                 <td>${registro.nome}</td>
                 <td>${registro.idade}</td>
@@ -18,8 +18,40 @@ function mostrarRegistros(registros) {
             </tr>
         `
     })
-    $('#tabelaRegistros').html(tabelaHTML)
+    $('#tabelaRegistros').html(tabela)
 }
+
+async function atualizarTabela(pagina = 1) {
+    var url = `http://localhost:3000/rick/list?page=${pagina}&pageSize=5`
+
+    try {
+        var resposta = await fetch(url)
+        var { registros, total, totalPages } = await resposta.json()
+
+        mostrarRegistros(registros) 
+
+        mostrarPaginacao(pagina, totalPages)
+    } catch (error) {
+        console.error('Erro ao atualizar a tabela:', error)
+    }
+}
+
+
+function mostrarPaginacao(paginaAtual, totalPaginas) {
+    var paginacao = []
+
+    for (let i = 1; i <= totalPaginas; i++) {
+        paginacao.push(`
+            <li class="page-item ${i === paginaAtual ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="atualizarTabela(${i})">${i}</a>
+            </li>
+        `)
+    }
+
+    $('#paginacao').html(paginacao.join(''))
+}
+
+
 
 async function editarRegistro(cpf) {
     var linha = $(`td:contains(${cpf})`).closest('tr')
@@ -42,14 +74,14 @@ async function editarRegistro(cpf) {
 }
 
 async function deletarRegistroBanco(cpf) {
-    const url = `http://localhost:3000/rick/delete/${cpf}`
+    var url = `http://localhost:3000/rick/delete/${cpf}`
     
     try {
-        const resposta = await fetch(url, {
+        var resposta = await fetch(url, {
             method: 'DELETE',
         });
         
-        const resultado = await resposta.json()
+        var resultado = await resposta.json()
         
         if (resposta.ok) {
             console.log('Mocorongo deletado do banco de dados.')
@@ -82,22 +114,6 @@ async function deletarRegistro(cpf) {
     }
 }
 
-
-
-async function atualizarTabela() {
-    const url = 'http://localhost:3000/rick/list'
-
-    try {
-        const resposta = await fetch(url)
-        const registros = await resposta.json()
-
-        mostrarRegistros(registros)
-
-    } catch (error) {
-        console.error('Erro ao atualizar a tabela:', error);
-    }
-}
-
 function validarCpf(res) {
     if (res === true) {
         alert('CPF REPETIDO')
@@ -109,10 +125,10 @@ function validarCpf(res) {
 }
 
 async function verificarCpf(cpf) {
-    const url = `http://localhost:3000/rick/check-cpf/${cpf}`
+    var url = `http://localhost:3000/rick/check-cpf/${cpf}`
     try {
-        const resposta = await fetch(url)
-        const resultado = await resposta.json()
+        var resposta = await fetch(url)
+        var resultado = await resposta.json()
         validarCpf(resultado.exists)
         return resultado.exists
 
@@ -123,12 +139,12 @@ async function verificarCpf(cpf) {
 }
 //teste
 async function buscarMocorongo(teclasApertadas) {
-    const url = `http://localhost:3000/rick/search/${teclasApertadas}`
+    var url = `http://localhost:3000/rick/search/${teclasApertadas}`
 
     try {
         
-        const resposta = await fetch(url)
-        const registros = await resposta.json()
+        var resposta = await fetch(url)
+        var registros = await resposta.json()
         mostrarRegistros(registros)
        
     } catch (error) {
@@ -137,18 +153,18 @@ async function buscarMocorongo(teclasApertadas) {
 }
 
 async function enviarDados(dados) {
-    const url = 'http://localhost:3000/rick/add'
+    var url = 'http://localhost:3000/rick/add'
     console.log("Enviando dados para:", url)
 
     try {
-        const resposta = await fetch(url, {
+        var resposta = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: dados,
         })
-        const resultado = await resposta.json()
+        var resultado = await resposta.json()
         console.log(resultado)
         atualizarTabela()
     } catch (error) {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +9,13 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <h1>EXERCICIO SUNECA</h1>
+
 <body>
     <div class="container mt-3">
         <div class="row">
             <div class="col-md-2">
                 <label>Nome</label>
-                <input type="text" id="nomeInput"class="form-control" placeholder="">
+                <input type="text" id="nomeInput" class="form-control" placeholder="">
             </div>
             <div class="col-md-2">
                 <label>Idade</label>
@@ -37,13 +39,13 @@
                 <button type="button" id="saveButton" class="btn btn-primary">Salvar</button>
             </div>
         </div>
-        
+
     </div>
     <div class="container mt-3">
         <label>Busca:</label>
         <div><input id="buscaInput"></input></div>
     </div>
-    
+
     <div class="container mt-3">
         <h2>Registros de Mocorongos</h2>
         <table class="table">
@@ -60,20 +62,27 @@
                 </tr>
             </thead>
             <tbody id="tabelaRegistros"></tbody>
-         
+
         </table>
+
+        <nav aria-label="Navegação de página">
+            <ul class="pagination" id="paginacao">
+            </ul>
+        </nav>
+
     </div>
-   
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="index.js"></script>
 
 
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
 </body>
+
 </html>
