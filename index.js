@@ -21,6 +21,47 @@ function mostrarRegistros(registros) {
     $('#tabelaRegistros').html(tabelaHTML)
 }
 
+async function editarRegistro(cpf) {
+    var linha = $(`td:contains(${cpf})`).closest('tr')
+    
+    var dados = []
+    
+    linha.find('td').each(function(index, td) {
+        dados.push($(td).text())
+    })
+
+    $('#nomeInput').val(dados[0])
+    $('#idadeInput').val(dados[1])
+    $('#alturaInput').val(dados[2].replace(".",","))
+    $('#pesoInput').val(dados[3])
+    $('#cpfInput').val(dados[4])
+
+    await deletarRegistroBanco(cpf)
+    
+    linha.remove()
+}
+
+async function deletarRegistroBanco(cpf) {
+    const url = `http://localhost:3000/rick/delete/${cpf}`
+    
+    try {
+        const resposta = await fetch(url, {
+            method: 'DELETE',
+        });
+        
+        const resultado = await resposta.json()
+        
+        if (resposta.ok) {
+            console.log('Mocorongo deletado do banco de dados.')
+        } else {
+            alert(resultado.message || 'Erro ao deletar mocorongo.')
+        }
+    } catch (error) {
+        console.error('Erro ao tentar deletar mocorongo:', error)
+        alert('Erro ao tentar deletar mocorongo.')
+    }
+}
+
 async function deletarRegistro(cpf) {
     var url = `http://localhost:3000/rick/delete/${cpf}`
 
